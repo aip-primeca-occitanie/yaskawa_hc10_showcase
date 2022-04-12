@@ -68,7 +68,7 @@ robot_state_publisher #publish to /motoman_hc10/joint_states
 ```
 
 ___
-## hc10_torque_control.launch
+## hc10_control_torque.launch
 ### rosparam:
 ```py
 control_torque.yaml
