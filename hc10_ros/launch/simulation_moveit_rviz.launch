@@ -13,8 +13,9 @@
   <!--  - if sim=false, a robot_ip argument is required -->
   <arg name="sim" default="true" />
   <!--Uncomment the lines below if you want to fixate the robot_ip address and its controller-->
-  <!--<arg name="robot_ip" default="192.168.0.113" unless="$(arg sim)" />
-  <arg name="controller" default="yrc1000" unless="$(arg sim)" /> -->
+  <arg name="robot_ip" default="192.168.1.40" unless="$(arg sim)" />
+  <arg name="controller" default="yrc1000" unless="$(arg sim)" />
+  <arg name="pipeline" default="ompl" />
  
   <!-- load the robot_description parameter before launching ROS-I nodes -->
   <include file="$(find hc10_ros)/launch/planning_context.launch" >
@@ -42,6 +43,7 @@
 
   <include file="$(find hc10_ros)/launch/move_group.launch">    
     <arg name="publish_monitored_planning_scene" value="true" />
+    <arg name="pipeline" value="$(arg pipeline)" />
   </include>
 
   <include file="$(find hc10_ros)/launch/moveit_rviz.launch">
