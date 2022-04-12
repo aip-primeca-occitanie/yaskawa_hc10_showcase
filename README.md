@@ -1,2 +1,2 @@
 # yaskawa_hc10_showcase
-test push
+see the wiki for more info
