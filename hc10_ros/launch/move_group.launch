@@ -44,9 +44,25 @@
   </include>
 
   <!-- Planning Functionality -->
-  <include ns="move_group" file="$(find hc10_ros)/launch/planning_pipeline.launch.xml">
-    <arg name="pipeline" value="$(arg pipeline)" />
-  </include>
+  <!-- Planning Pipelines -->
+  <group ns="move_group/planning_pipelines">
+
+    <!-- OMPL -->
+    <include ns="ompl" file="$(find hc10_ros)/launch/planning_pipeline.launch.xml">
+      <arg name="pipeline" value="ompl" />
+    </include>
+
+    <!-- Pilz Industrial Motion-->
+    <include ns="pilz_industrial_motion_planner" file="$(find hc10_ros)/launch/planning_pipeline.launch.xml">
+      <arg name="pipeline" value="pilz_industrial_motion_planner" />
+    </include>
+
+    <!-- Support custom planning pipeline -->
+    <include if="$(eval arg('pipeline') not in ['ompl', 'pilz_industrial_motion_planner'])"
+	     file="$(find hc10_ros)/launch/planning_pipeline.launch.xml">
+      <arg name="pipeline" value="$(arg pipeline)" />
+    </include>
+  </group>
 
   <!-- Trajectory Execution Functionality -->
   <include ns="move_group" file="$(find hc10_ros)/launch/trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
