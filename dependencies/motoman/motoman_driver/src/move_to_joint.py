@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, yaml
+from tempfile import tempdir
 from genpy import Duration
 import roslib; roslib.load_manifest('motoman_driver')
 import rospy, rosbag
@@ -34,27 +35,53 @@ def build_traj(start, end, duration):
   start_pt.velocities = [0]*len(start.position)
   start_pt.time_from_start = rospy.Duration(0.0)
 
-  end_pt = JointTrajectoryPoint()
-  for j in joint_names:
-    idx = end.name.index(j)
-    end_pt.positions.append(end.position[idx])  # reorder to match start-pos joint ordering
-    end_pt.velocities.append(0)
-  end_pt.time_from_start = rospy.Duration(duration)
+  # end_pt = JointTrajectoryPoint()
+  # for j in joint_names:
+  #   idx = end.name.index(j)
+  #   end_pt.positions.append(end.position[idx])  # reorder to match start-pos joint ordering
+  #   end_pt.velocities.append(0)
+  # end_pt.time_from_start = rospy.Duration(duration)
 
   print("duration: ", duration)
 
-  end2_pt = JointTrajectoryPoint()
-  end2_pt.positions = [3,0,0,0,0,0]
-  end2_pt.velocities = [-0.005,0,0,0,0,0]*0
-  end2_pt.time_from_start = rospy.Duration(duration*2)
+  # end2_pt = JointTrajectoryPoint()
+  # end2_pt.positions = [-1.5,0,0,0,0,0]
+  # end2_pt.velocities = [-0.15,0,0,0,0,0]
+  # end2_pt.time_from_start = rospy.Duration(duration*2)
 
-  end3_pt = JointTrajectoryPoint()
-  end3_pt.positions = [3,0,0,0,0,0]
-  end3_pt.velocities = [-0.005,0,0,0,0,0]*0
-  end3_pt.time_from_start = rospy.Duration(duration*3)
+  # end3_pt = JointTrajectoryPoint()
+  # end3_pt.positions = [-3,0,0,0,0,0]
+  # end3_pt.velocities = [-0.15,0,0,0,0,0]
+  # end3_pt.time_from_start = rospy.Duration(duration*3)
+
+  mypoints = [start_pt]
+
+  zero_pt = JointTrajectoryPoint()
+  zero_pt.positions = [0,0,0,0,0,0]
+  zero_pt.velocities = [0,0,0,0,0,0]
+  zero_pt.time_from_start = rospy.Duration(duration)
+  mypoints.append(zero_pt)
+
+  first_pt = JointTrajectoryPoint()
+  first_pt.positions = [0,0,0,0,0,0]
+  first_pt.velocities = [0,0,0,0,0,0]
+  first_pt.time_from_start = rospy.Duration(duration*2)
+  mypoints.append(first_pt)
+
+  # mypoints.append(end_pt)
+  # mypoints.append(end2_pt)
+  # mypoints.append(end3_pt)
+  
+  temp_pt = JointTrajectoryPoint()
+
+  for i in range (0,100):
+    temp_pt.positions = [-1.5*0.01*i,0,0,0,0,0]
+    temp_pt.velocities = [-1.5/duration,0,0,0,0,0]
+    temp_pt.time_from_start = rospy.Duration(duration*2+duration*0.01*i)
+    mypoints.append(temp_pt)
   
 
-  return JointTrajectory(joint_names=joint_names, points=[start_pt, end_pt, end3_pt])
+  return JointTrajectory(joint_names=joint_names, points=mypoints) #[start_pt, end_pt, end2_pt, end3_pt])
   
 # read the current robot position from the "joint_states" topic
 def get_cur_pos():
